@@ -1,5 +1,8 @@
 // components/Wall.jsx
 import { Group, Rect, Line } from 'react-konva'
+import { useDispatch } from 'react-redux'
+import PointHandle from './PointHandle'
+import { updateWall } from '@/store/wallSlice'
 
 /**
  * Wall Component - Renders a wall with thickness and layers
@@ -9,6 +12,23 @@ import { Group, Rect, Line } from 'react-konva'
  * @param {Function} props.onSelect - Selection callback
  */
 export default function Wall({ wall, isSelected, onSelect }) {
+    const dispatch = useDispatch()
+
+    const handleStartPointChange = (newPosition) => {
+        dispatch(updateWall({
+            ...wall,
+            start: newPosition
+        }))
+    }
+
+    const handleEndPointChange = (newPosition) => {
+        dispatch(updateWall({
+            ...wall,
+            end: newPosition
+        }))
+    }
+
+
     // Calculate wall angle and perpendicular angle
     const dx = wall.end.x - wall.start.x
     const dy = wall.end.y - wall.start.y
@@ -19,23 +39,22 @@ export default function Wall({ wall, isSelected, onSelect }) {
     // Wall settings with defaults
     const thickness = wall.thickness || 10
     const layers = wall.layers || [
-        { name: 'interior', thickness: 0.15, color: '#7A7A7A' }, // 15% interior finish - dark gray
-        { name: 'structure', thickness: 0.70, color: '#4D4D4D' }, // 70% main structure - darker gray
-        { name: 'exterior', thickness: 0.15, color: '#2F2F2F' },  // 15% exterior finish - very dark gray
+        { name: 'interior', thickness: 4, color: '#7A7A7A' }, // 15% interior finish - dark gray
+        // { name: 'structure', thickness: 0.70, color: '#4D4D4D' }, // 70% main structure - darker gray
+        // { name: 'exterior', thickness: 0.15, color: '#2F2F2F' },  // 15% exterior finish - very dark gray
     ]
 
     // Calculate total thickness and layer positions
-    let currentOffset = 0
-    const layerRects = layers.map(layer => {
+    const layerRects = layers.reduce((acc, layer, index) => {
         const layerThickness = thickness * layer.thickness
-        const rect = {
+        const currentOffset = acc.reduce((sum, l) => sum + l.actualThickness, 0)
+        acc.push({
             ...layer,
             offset: currentOffset,
             actualThickness: layerThickness,
-        }
-        currentOffset += layerThickness
-        return rect
-    })
+        })
+        return acc
+    }, [])
 
     // Render individual layer
     const renderLayer = (layer, index) => {
@@ -68,40 +87,22 @@ export default function Wall({ wall, isSelected, onSelect }) {
             {/* Selection indicator */}
             {isSelected && (
                 <>
-                    {/* Outline around entire wall */}
-                    <Rect
-                        x={wall.start.x}
-                        y={wall.start.y}
-                        width={wallLength}
-                        height={thickness}
-                        rotation={(angle * 180) / Math.PI}
-                        stroke="#4A90E2"
-                        strokeWidth={2}
-                        dash={[5, 5]}
-                        listening={false}
-                    />
+
 
                     {/* Start point handle */}
-                    <Rect
-                        x={wall.start.x - 4}
-                        y={wall.start.y - 4}
-                        width={8}
-                        height={8}
-                        fill="#4A90E2"
-                        stroke="#ffffff"
-                        strokeWidth={2}
+                    <PointHandle
+                        point={wall.start}
+                        onPointChange={handleStartPointChange}
                     />
 
                     {/* End point handle */}
-                    <Rect
-                        x={wall.end.x - 4}
-                        y={wall.end.y - 4}
-                        width={8}
-                        height={8}
-                        fill="#4A90E2"
-                        stroke="#ffffff"
-                        strokeWidth={2}
+                    <PointHandle
+                        point={wall.end}
+                        onPointChange={handleEndPointChange}
                     />
+
+
+
                 </>
             )}
 
@@ -109,9 +110,9 @@ export default function Wall({ wall, isSelected, onSelect }) {
             {isSelected && (
                 <Line
                     points={[wall.start.x, wall.start.y, wall.end.x, wall.end.y]}
-                    stroke="#FF6B6B"
+                    stroke="#4A90E2"
                     strokeWidth={1}
-                    dash={[2, 2]}
+                    // dash={[2, 2]}
                     listening={false}
                 />
             )}

@@ -1,5 +1,5 @@
 // components/ResizeHandles.jsx
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Circle, Rect } from 'react-konva'
 
 /**
@@ -10,6 +10,14 @@ import { Circle, Rect } from 'react-konva'
  * @param {Function} props.onHandleDrag - Callback when handle is dragged
  */
 export default function ResizeHandles({ vertices, visible, onHandleDrag }) {
+    // Memoize edge handles to avoid recalculating
+    const edgeHandles = useMemo(() => [
+        { x: (vertices[0].x + vertices[1].x) / 2, y: (vertices[0].y + vertices[1].y) / 2, edge: 'top' },
+        { x: (vertices[1].x + vertices[2].x) / 2, y: (vertices[1].y + vertices[2].y) / 2, edge: 'right' },
+        { x: (vertices[2].x + vertices[3].x) / 2, y: (vertices[2].y + vertices[3].y) / 2, edge: 'bottom' },
+        { x: (vertices[3].x + vertices[0].x) / 2, y: (vertices[3].y + vertices[0].y) / 2, edge: 'left' }
+    ], [vertices])
+
     if (!visible || vertices.length !== 4) return null
 
     // Define corner handles
@@ -20,29 +28,67 @@ export default function ResizeHandles({ vertices, visible, onHandleDrag }) {
         type: 'corner'
     }))
 
-    // Define edge handles (midpoints)
-    const edgeHandles = [
-        { x: (vertices[0].x + vertices[1].x) / 2, y: (vertices[0].y + vertices[1].y) / 2, edge: 'top' },
-        { x: (vertices[1].x + vertices[2].x) / 2, y: (vertices[1].y + vertices[2].y) / 2, edge: 'right' },
-        { x: (vertices[2].x + vertices[3].x) / 2, y: (vertices[2].y + vertices[3].y) / 2, edge: 'bottom' },
-        { x: (vertices[3].x + vertices[0].x) / 2, y: (vertices[3].y + vertices[0].y) / 2, edge: 'left' }
-    ]
+    const handleDragStart = (e) => {
+        e.cancelBubble = true
+    }
 
     const handleDragMove = (e, type, key) => {
-        console.log('[ResizeHandles] Rendering with vertices:', vertices, 'visible:', visible)
+        e.cancelBubble = true // Stop event propagation to parent
+
         const stage = e.target.getStage()
-        const pointerPos = stage.getPointerPosition()
-        console.log(`[ResizeHandles] ${type} handle ${key} drag position:`, pointerPos)
-        if (pointerPos && onHandleDrag) {
-            console.log(`[ResizeHandles] Calling onHandleDrag with type=${type}, key=${key}`)
+        const layer = e.target.getLayer()
+
+        // Convert stage pointer position to layer/world coordinates
+        let worldPos = layer.getRelativePointerPosition()
+        console.log(`[ResizeHandles] ${type} ${key} drag - raw worldPos:`, worldPos)
+
+        // For edge handles, constrain movement to only perpendicular to the edge
+        if (type === 'edge') {
+            // Calculate which vertices define this edge and get their current values
+            let constraintX, constraintY
+
+            if (key === 'top') {
+                // Top edge: vertices 0 and 1, constrain to keep x average, allow y change
+                constraintX = (vertices[0].x + vertices[1].x) / 2
+                worldPos = { x: constraintX, y: worldPos.y }
+                console.log(`[ResizeHandles] top edge - constraint x=${constraintX}, new pos:`, worldPos)
+            } else if (key === 'right') {
+                // Right edge: vertices 1 and 2, constrain to keep y average, allow x change
+                constraintY = (vertices[1].y + vertices[2].y) / 2
+                worldPos = { x: worldPos.x, y: constraintY }
+                console.log(`[ResizeHandles] right edge - constraint y=${constraintY}, new pos:`, worldPos)
+            } else if (key === 'bottom') {
+                // Bottom edge: vertices 2 and 3, constrain to keep x average, allow y change
+                constraintX = (vertices[2].x + vertices[3].x) / 2
+                worldPos = { x: constraintX, y: worldPos.y }
+                console.log(`[ResizeHandles] bottom edge - constraint x=${constraintX}, new pos:`, worldPos)
+            } else if (key === 'left') {
+                // Left edge: vertices 3 and 0, constrain to keep y average, allow x change
+                constraintY = (vertices[3].y + vertices[0].y) / 2
+                worldPos = { x: worldPos.x, y: constraintY }
+                console.log(`[ResizeHandles] left edge - constraint y=${constraintY}, new pos:`, worldPos)
+            }
+        }
+
+        if (worldPos && onHandleDrag) {
+            console.log(`[ResizeHandles] Calling onHandleDrag with type=${type}, key=${key}, pos=`, worldPos)
             if (type === 'corner') {
-                onHandleDrag('corner', key, pointerPos)
+                onHandleDrag('corner', key, worldPos)
             } else if (type === 'edge') {
-                onHandleDrag('edge', key, pointerPos)
+                onHandleDrag('edge', key, worldPos)
             }
         } else {
-            console.warn(`[ResizeHandles] Missing pointerPos or onHandleDrag callback`)
+            console.warn(`[ResizeHandles] Missing worldPos or onHandleDrag callback`)
         }
+    }
+
+    const handleDragEnd = (e) => {
+        e.cancelBubble = true // Stop event propagation to parent
+    }
+
+    const handleDragBound = (pos) => {
+        // Prevent the shape from actually moving
+        return { x: 0, y: 0 }
     }
 
     return (
@@ -58,7 +104,10 @@ export default function ResizeHandles({ vertices, visible, onHandleDrag }) {
                     stroke="#ffffff"
                     strokeWidth={2}
                     draggable
+                    dragBoundFunc={handleDragBound}
+                    onDragStart={(e) => handleDragStart(e)}
                     onDragMove={(e) => handleDragMove(e, 'corner', index)}
+                    onDragEnd={handleDragEnd}
                     onMouseEnter={(e) => {
                         const container = e.target.getStage().container()
                         container.style.cursor = index % 2 === 0 ? 'nwse-resize' : 'nesw-resize'
@@ -82,7 +131,10 @@ export default function ResizeHandles({ vertices, visible, onHandleDrag }) {
                     stroke="#ffffff"
                     strokeWidth={2}
                     draggable
+                    dragBoundFunc={handleDragBound}
+                    onDragStart={(e) => handleDragStart(e)}
                     onDragMove={(e) => handleDragMove(e, 'edge', handle.edge)}
+                    onDragEnd={handleDragEnd}
                     onMouseEnter={(e) => {
                         const container = e.target.getStage().container()
                         const cursors = { top: 'ns-resize', right: 'ew-resize', bottom: 'ns-resize', left: 'ew-resize' }

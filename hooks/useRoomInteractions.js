@@ -19,15 +19,12 @@ export default function useRoomInteractions() {
 	}
 
 	const handleRoomDragEnd = (e, room) => {
-		console.log('🫲[useRoomInteractions] Room drag ended for room:', room)
-
 		// Only handle drag if the position actually changed
 		const deltaX = e.target.x()
 		const deltaY = e.target.y()
 
 		// If no movement, don't update
 		if (deltaX === 0 && deltaY === 0) {
-			console.log('[useRoomInteractions] No movement detected, skipping update')
 			return
 		}
 
@@ -64,9 +61,6 @@ export default function useRoomInteractions() {
 		if (tempDeltaX === Infinity) tempDeltaX = 0
 		if (tempDeltaY === Infinity) tempDeltaY = 0
 
-		console.log('🔼 FINAL DELTA:', { finalDeltaX, finalDeltaY })
-		console.log('🔼 TEMP DELTA:', { tempDeltaX, tempDeltaY })
-
 		const updatedRoom = {
 			...room,
 			vertices: room.vertices.map((v) => ({
@@ -86,33 +80,40 @@ export default function useRoomInteractions() {
 	}
 
 	const handleRoomResize = (type, index, newPos) => {
-		console.log('[useRoomInteractions] handleRoomResize called:', { type, index, newPos })
-		console.log('[useRoomInteractions] selectedId:', selectedId, 'selectedType:', selectedType)
+		console.log('[handleRoomResize] Called with:', { type, index, newPos: { x: newPos?.x, y: newPos?.y } })
+		console.log('[handleRoomResize] selectedId:', selectedId, 'selectedType:', selectedType)
 
 		if (!selectedId || selectedType !== 'room') {
-			console.warn('[useRoomInteractions] Room not selected - returning early')
+			console.warn('[handleRoomResize] Early return - not a room selected')
 			return
 		}
 
 		const room = rooms.find((r) => r.id === selectedId)
-		console.log('[useRoomInteractions] Found room:', room?.id, 'with vertices:', room?.vertices)
+		console.log('[handleRoomResize] Found room:', room?.id, 'vertices:', room?.vertices)
 
 		if (!room) {
-			console.error('[useRoomInteractions] Room not found in state')
+			console.error('[handleRoomResize] Room not found in state with id:', selectedId)
 			return
 		}
 
 		let newVertices
 
-		console.log('[useRoomInteractions] Updating', type, 'at index', index)
 		if (type === 'corner') {
-			console.log('[useRoomInteractions] Calling updateCornerVertex with oldVertices:', room.vertices)
+			console.log('[handleRoomResize] Updating corner', index)
 			newVertices = updateCornerVertex(room.vertices, index, newPos)
-			console.log('[useRoomInteractions] New vertices after updateCornerVertex:', newVertices)
+			console.log('[handleRoomResize] New vertices after corner update:', newVertices)
 		} else if (type === 'edge') {
-			console.log('[useRoomInteractions] Calling updateEdgeVertex for edge:', index)
+			console.log('[handleRoomResize] Updating edge', index)
 			newVertices = updateEdgeVertex(room.vertices, index, newPos)
-			console.log('[useRoomInteractions] New vertices after updateEdgeVertex:', newVertices)
+			console.log('[handleRoomResize] New vertices after edge update:', newVertices)
+		} else {
+			console.warn('[handleRoomResize] Unknown type:', type)
+			return
+		}
+
+		if (!newVertices) {
+			console.error('[handleRoomResize] newVertices is null/undefined')
+			return
 		}
 
 		const updatedRoom = {
@@ -126,7 +127,7 @@ export default function useRoomInteractions() {
 			},
 		}
 
-		console.log('[useRoomInteractions] Dispatching updateRoom with:', updatedRoom)
+		console.log('[handleRoomResize] Dispatching updateRoom with:', updatedRoom)
 		dispatch(updateRoom(updatedRoom))
 	}
 

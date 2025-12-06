@@ -40,8 +40,6 @@ export default function useCanvasInteractions() {
 
 	// Mouse down handler for starting drawing actions based on the selected tool
 	const handleMouseDown = (e) => {
-		console.log('⬇️Mouse Down Event:', e.target.getStage())
-
 		const stage = e.target.getStage()
 		const pointer = stage.getPointerPosition()
 
@@ -97,8 +95,6 @@ export default function useCanvasInteractions() {
 	}
 
 	const handleMouseUp = (e) => {
-		console.log('⬆️Mouse Up Event:', e.target.getStage())
-
 		// Stop panning
 		if (isPanningRef.current) {
 			isPanningRef.current = false

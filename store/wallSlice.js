@@ -10,9 +10,9 @@ const initialState = {
 	wallSettings: {
 		thickness: 20,
 		layers: [
-			{ name: 'interior', thickness: 0.15, color: '#E8E8E8' },
-			{ name: 'structure', thickness: 0.7, color: '#CCCCCC' },
-			{ name: 'exterior', thickness: 0.15, color: '#B8B8B8' },
+			{ name: 'interior', thickness: 0.5, color: '#000000ff' },
+			// { name: 'structure', thickness: 0.7, color: '#CCCCCC' },
+			// { name: 'exterior', thickness: 0.15, color: '#B8B8B8' },
 		],
 	},
 }

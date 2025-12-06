@@ -27,13 +27,13 @@ export default function ZoomControls() {
 
     return (
         <div className="flex gap-1 items-center text-white">
-            <button button
+            <button
                 onClick={handleZoomIn}
                 className="flex items-center justify-center px-2 py-1 rounded border border-transparent  hover:text-gray-800 transition-all cursor-pointer"
                 title="Zoom In (scroll up)"
             >
                 <span className="text-sm font-light">+</span>
-            </button >
+            </button>
             <button
                 onClick={handleZoomOut}
                 className="flex items-center justify-center px-2 py-1 rounded border border-transparent  hover:text-gray-800 transition-all cursor-pointer"

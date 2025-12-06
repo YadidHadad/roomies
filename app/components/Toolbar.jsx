@@ -99,7 +99,7 @@ function Toolbar() {
 
 	return (
 		<>
-			<div className="p-3 h-full flex flex-col">
+			<div className="p-3 h-full flex flex-col ">
 				{/* Drawing Tools */}
 				<div className="mb-4">
 					<h3 className="text-xs font-semibold text-gray-600 uppercase mb-2">Drawing Tools</h3>

@@ -17,17 +17,16 @@ export default function TemporaryWallLayer() {
     const layers = wallSettings.layers
 
     // Calculate layer positions
-    let currentOffset = 0
-    const layerRects = layers.map(layer => {
+    const layerRects = layers.reduce((acc, layer) => {
         const layerThickness = thickness * layer.thickness
+        const currentOffset = acc.length > 0 ? acc[acc.length - 1].offset + acc[acc.length - 1].actualThickness : 0
         const rect = {
             ...layer,
             offset: currentOffset,
             actualThickness: layerThickness,
         }
-        currentOffset += layerThickness
-        return rect
-    })
+        return [...acc, rect]
+    }, [])
 
     return (
         <Group>
@@ -54,7 +53,7 @@ export default function TemporaryWallLayer() {
             {/* Interior reference line */}
             <Line
                 points={[wallStartPos.x, wallStartPos.y, wallEndPos.x, wallEndPos.y]}
-                stroke="#FF6B6B"
+                stroke="#4A90E2"
                 strokeWidth={2}
                 dash={[5, 5]}
                 listening={false}

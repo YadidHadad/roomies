@@ -15,7 +15,6 @@ const uiSlice = createSlice({
 	initialState,
 	reducers: {
 		setTool: (state, action) => {
-			console.log('✂️Setting tool to:', action.payload)
 			state.tool = action.payload
 		},
 		setSelected: (state, action) => {

@@ -11,14 +11,17 @@ export default function RoomLayer({ onRoomContextMenu }) {
 
     const { handleRoomSelect, handleRoomDragEnd, handleRoomResize } = useRoomInteractions()
 
+    const handleRoomResize_wrapper = (type, index, newPos) => {
+        console.log('[RoomLayer] handleRoomResize_wrapper called:', { type, index, newPos: { x: newPos?.x, y: newPos?.y } })
+        handleRoomResize(type, index, newPos)
+    }
+
     const handleRoomDoubleClick = (room) => {
-        console.log('[RoomLayer] Room double-clicked:', room)
         dispatch(showRoomPropertiesDialog(room))
     }
 
-    const handleRoomContextMenu = (room) => {
-        console.log('[RoomLayer] Room right-clicked:', room)
-        onRoomContextMenu && onRoomContextMenu(room)
+    const handleRoomContextMenu = (room, event) => {
+        onRoomContextMenu && onRoomContextMenu(room, event)
     }
 
     return (
@@ -30,7 +33,7 @@ export default function RoomLayer({ onRoomContextMenu }) {
                     isSelected={selectedId === room.id && selectedType === 'room'}
                     onSelect={handleRoomSelect}
                     onDragEnd={handleRoomDragEnd}
-                    onResize={handleRoomResize}
+                    onResize={handleRoomResize_wrapper}
                     onDoubleClick={handleRoomDoubleClick}
                     onContextMenu={handleRoomContextMenu}
                     draggable={tool === 'select'}

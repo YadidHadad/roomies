@@ -51,7 +51,7 @@ export default function Grid() {
     )
 
     return (
-        <Group zIndex={0} listening={false}>
+        <Group listening={false}>
             {verticalLines}
             {horizontalLines}
             {scaleLabel}

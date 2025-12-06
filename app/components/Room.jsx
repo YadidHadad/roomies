@@ -37,11 +37,9 @@ export default function Room({
     return (
         <Group
             draggable={draggable && !isSelected}
-            zIndex={room.zIndex || 0}
             onDragEnd={(e) => {
                 // Only call onDragEnd if Group is actually draggable (not selected)
                 if (draggable && !isSelected && onDragEnd) {
-                    console.log('[Room] Group drag ended')
                     onDragEnd(e, room)
                 }
             }}

@@ -56,8 +56,6 @@ export default function useRoomDrawing() {
 			style: generateRoomStyle(),
 		}
 
-		console.log('🆕[useRoomDrawing] Finished drawing room:', newRoom)
-
 		dispatch(addRoom(newRoom))
 		dispatch(finishDrawingRoom(null)) // clear drawing state, no dialog
 	}

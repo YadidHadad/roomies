@@ -73,8 +73,6 @@ export const createRectVertices = (start, end) => {
  * @returns {Array} Updated vertices
  */
 export const updateCornerVertex = (vertices, cornerIndex, newPos) => {
-	console.log('[updateCornerVertex] Input:', { cornerIndex, newPos, vertices })
-
 	// Create completely new vertex objects - don't mutate originals
 	const newVertices = vertices.map((v, i) => ({ x: v.x, y: v.y }))
 
@@ -102,7 +100,6 @@ export const updateCornerVertex = (vertices, cornerIndex, newPos) => {
 			break
 	}
 
-	console.log('[updateCornerVertex] Output:', newVertices)
 	return newVertices
 }
 
@@ -114,8 +111,6 @@ export const updateCornerVertex = (vertices, cornerIndex, newPos) => {
  * @returns {Array} Updated vertices
  */
 export const updateEdgeVertex = (vertices, edge, newPos) => {
-	console.log('[updateEdgeVertex] Input:', { edge, newPos, vertices })
-
 	// Create completely new vertex objects - don't mutate originals
 	const newVertices = vertices.map((v, i) => ({ x: v.x, y: v.y }))
 
@@ -138,7 +133,6 @@ export const updateEdgeVertex = (vertices, edge, newPos) => {
 			break
 	}
 
-	console.log('[updateEdgeVertex] Output:', newVertices)
 	return newVertices
 }
 

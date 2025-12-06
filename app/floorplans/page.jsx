@@ -47,10 +47,9 @@ export default function FloorPlanEditor() {
 	}
 
 	// Handle context menu (right-click) on room
-	const handleRoomContextMenu = (room) => {
-		// Get cursor position from event - we need to pass this from RoomLayer
-		// For now, get it from page coordinates
-		const position = { x: window.event?.pageX || 0, y: window.event?.pageY || 0 }
+	const handleRoomContextMenu = (room, event) => {
+		// Get cursor position from event
+		const position = event ? { x: event.pageX || 0, y: event.pageY || 0 } : { x: 0, y: 0 }
 		setContextMenu({ room, position })
 	}
 
@@ -105,7 +104,7 @@ export default function FloorPlanEditor() {
 	return (
 		<div className="w-screen h-screen bg-gray-100 flex flex-col">
 			{/* Top Navbar */}
-			<div className="border-b border-gray-300 px-4 py-2 flex items-center justify-between h-14" style={{ backgroundColor: '#2e302d' }}>
+			<div className=" border-b border-gray-300 px-4 py-2 flex items-center justify-between h-14" style={{ backgroundColor: '#2e302d' }}>
 				<h1 className="text-lg font-light text-white">Spacroom</h1>
 				<ZoomControls />
 			</div>
@@ -113,7 +112,7 @@ export default function FloorPlanEditor() {
 			{/* Main Content Grid */}
 			<div className="flex flex-1 overflow-hidden">
 				{/* Left Sidebar */}
-				<div className="border-r border-gray-300  overflow-y-auto" style={{ backgroundColor: '#fdfffc' }}>
+				<div className="border-r border-gray-300  overflow-y-auto w-160" style={{ backgroundColor: '#fdfffc' }}>
 					<Toolbar />
 				</div>
 

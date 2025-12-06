@@ -19,7 +19,6 @@ export async function GET(request) {
 		if (isPublic !== null) query.isPublic = isPublic === 'true'
 
 		console.log('🔍 Querying floor plans with:', query)
-		console.log('📝 Collection name:', FloorPlan.collection.name)
 
 		const floorPlans = await FloorPlan.find(query).sort({ createdAt: -1 })
 		console.log('📊 Found floor plans:', floorPlans.length)

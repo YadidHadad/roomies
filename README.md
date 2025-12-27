@@ -1,36 +1,23 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+Architectural Portfolio
 
-## Getting Started
+#### Video Demo: (https://youtu.be/KGXMQcmhAIQ)
 
-First, run the development server:
+#### Description:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Hello CS50 team!
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+My name is Yadid Hadad and I am an architect living in Israel. Besides architecture, in the last few years I found another passion which is programming.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+Wanting to strengthen my programming core knowledge I signed myself up to the cs50 course and I was not wrong. It gave me a much wider perspective in cs core teachings.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+After submitting all of the course tasks and exercises I was inspired in the final project to build an architectural portfolio that will allow me to showcase my 10 year career as I have wanted for a very long time. Though the data and imagery is still in process the web site structure is fully set for your consideration.
 
-## Learn More
+My project is a react web-app made while using next.js and deployed on vercel. my stack also includes mongodb to load projects from the database and create new or update them.
 
-To learn more about Next.js, take a look at the following resources:
+the main page is projects where all existing projects are loaded from the data base, while clicking on each project takes you to a project page where you can find the full project details.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+As an admin I made a login route that allows me using a password to enter a dashboard page where I can add, update or delete from the database.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+I also made an analytics page where visitors can keep track of the whole data presented on the page and have an overview on the data presented in the website.
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Hope you have fun looking around!
